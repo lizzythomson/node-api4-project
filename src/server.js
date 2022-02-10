@@ -20,25 +20,47 @@ const users = [
 ];
 
 server.get('/api/users', (req, res) => {
-  res.json(users);
+  try {
+    res.json(users);
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        message: 'Unable to fetch users at this time. Please try again later',
+      });
+  }
 });
 
 server.post('/api/register', (req, res) => {
-  if (!req.body.username || !req.body.password) {
-    res.status(400).json({ message: 'username and password are required' });
-  } else {
-    users.push(req.body);
-    res.json(users);
+  try {
+    if (!req.body.username || !req.body.password) {
+      res.status(400).json({ message: 'username and password are required' });
+    } else {
+      users.push(req.body);
+      res.json(users);
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Unable to register. Please try again later' });
   }
 });
 
 server.post('/api/login', async (req, res) => {
-  const verifyUsername = await users.find(req.body.username);
-  const verifyPassword = await users.find(req.body.password);
-  if (!verifyUsername || !verifyPassword) {
-    res.status(400).json({ message: 'username and password are not correct' });
-  } else {
-    res.json({ message: `Welcome ${req.body.username}` });
+  try {
+    const verifyUsername = await users.find(req.body.username);
+    const verifyPassword = await users.find(req.body.password);
+    if (!verifyUsername || !verifyPassword) {
+      res
+        .status(400)
+        .json({ message: 'username and password are not correct' });
+    } else {
+      res.json({ message: `Welcome ${req.body.username}` });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Unable to login. Please try again later' });
   }
 });
 
