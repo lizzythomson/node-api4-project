@@ -65,7 +65,7 @@ server.post('/api/login', async (req, res) => {
 });
 
 server.use('/', (req, res) => {
-  res.send('<h1>Hello, Heroku!</h1>');
+  res.send('<h1>Hello, World!</h1>');
 });
 
 module.exports = server;
