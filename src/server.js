@@ -23,11 +23,9 @@ server.get('/api/users', (req, res) => {
   try {
     res.json(users);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: 'Unable to fetch users at this time. Please try again later',
-      });
+    res.status(500).json({
+      message: 'Unable to fetch users at this time. Please try again later',
+    });
   }
 });
 
@@ -37,7 +35,7 @@ server.post('/api/register', (req, res) => {
       res.status(400).json({ message: 'username and password are required' });
     } else {
       users.push(req.body);
-      res.json(users);
+      res.json(users[users.length - 1]);
     }
   } catch (error) {
     res
@@ -46,11 +44,13 @@ server.post('/api/register', (req, res) => {
   }
 });
 
+// async & await not needed for fake database, but would be needed for a real one
 server.post('/api/login', async (req, res) => {
   try {
-    const verifyUsername = await users.find(req.body.username);
-    const verifyPassword = await users.find(req.body.password);
-    if (!verifyUsername || !verifyPassword) {
+    const user = await users.find((user) => {
+      return user.username === req.body.username;
+    });
+    if (!user || user.password !== req.body.password) {
       res
         .status(400)
         .json({ message: 'username and password are not correct' });
